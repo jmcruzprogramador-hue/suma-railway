@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Suma de dos números</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            max-width: 480px;
+            margin: 40px auto;
+            padding: 16px;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        label {
+            display: flex;
+            flex-direction: column;
+            font-size: 0.95rem;
+        }
+        input[type="number"] {
+            padding: 8px;
+            font-size: 1rem;
+            margin-top: 4px;
+        }
+        button {
+            padding: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        #resultado {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .error {
+            color: #b00020;
+        }
+    </style>
+</head>
+<body>
+    <h1>Suma de dos números</h1>
+
+    <form id="form-suma" method="post">
+        <label>
+            Primer número:
+            <input type="number" name="a" id="a" step="any" required>
+        </label>
+
+        <label>
+            Segundo número:
+            <input type="number" name="b" id="b" step="any" required>
+        </label>
+
+        <button type="submit">Calcular</button>
+    </form>
+
+    <div id="resultado"></div>
+
+    <script>
+        const form = document.getElementById('form-suma');
+        const resultadoDiv = document.getElementById('resultado');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            resultadoDiv.textContent = '';
+
+            const formData = new FormData(form);
+
+            try {
+                const resp = await fetch('/suma', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await resp.json();
+
+                if (!resp.ok) {
+                    resultadoDiv.textContent = data.error || 'Error en la petición';
+                    resultadoDiv.classList.add('error');
+                } else {
+                    resultadoDiv.classList.remove('error');
+                    resultadoDiv.textContent = 'Resultado: ' + data.resultado;
+                }
+            } catch (err) {
+                resultadoDiv.textContent = 'Error de conexión con el servidor';
+                resultadoDiv.classList.add('error');
+            }
+        });
+    </script>
+</body>
+</html>
