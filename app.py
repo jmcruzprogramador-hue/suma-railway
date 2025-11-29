@@ -22,7 +22,7 @@ def suma():
     try:
         a = float(a)
         b = float(b)
-        resultado = a + b
+        resultado = a * b
         return jsonify({'resultado': resultado})
     except (ValueError, TypeError):
         return jsonify({'error': 'Los parámetros a y b deben ser numéricos'}), 400
